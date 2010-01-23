@@ -8,44 +8,6 @@ Author: Janis Elsts
 Author URI: http://w-shadow.com/
 */
 
-// Pre-2.6 compatibility
-if ( ! defined( 'WP_CONTENT_URL' ) )
-	define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
-if ( ! defined( 'WP_CONTENT_DIR' ) )
-	define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
-if ( ! defined( 'WP_PLUGIN_URL' ) )
-	define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
-if ( ! defined( 'WP_PLUGIN_DIR' ) )
-	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
-	
-if ( !function_exists('plugins_url') ){
-	function plugins_url($path = '', $plugin = '') {
-		$scheme = ( is_ssl() ? 'https' : 'http' );
-	
-		if ( $plugin !== '' && preg_match('#^' . preg_quote(WPMU_PLUGIN_DIR . DIRECTORY_SEPARATOR, '#') . '#', $plugin) ) {
-			$url = WPMU_PLUGIN_URL;
-		} else {
-			$url = WP_PLUGIN_URL;
-		}
-	
-		if ( 0 === strpos($url, 'http') ) {
-			if ( is_ssl() )
-				$url = str_replace( 'http://', "{$scheme}://", $url );
-		}
-	
-		if ( !empty($plugin) && is_string($plugin) ) {
-			$folder = dirname(plugin_basename($plugin));
-			if ('.' != $folder)
-				$url .= '/' . ltrim($folder, '/');
-		}
-	
-		if ( !empty($path) && is_string($path) && strpos($path, '..') === false )
-			$url .= '/' . ltrim($path, '/');
-	
-		return apply_filters('plugins_url', $url, $path, $plugin);
-	}
-}
-
 if (!class_exists('ws_wordpress_link_cloaker')) {
 
 class ws_wordpress_link_cloaker {	

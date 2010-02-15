@@ -3,7 +3,7 @@
 Plugin Name: Link Cloaking Plugin
 Plugin URI: http://w-shadow.com/blog/2007/07/28/link-cloaking-plugin-for-wordpress/
 Description: Automatically cloaks outgoing links in your posts and pages. You can also add static cloaked links manually.
-Version: 1.5
+Version: 1.6
 Author: Janis Elsts
 Author URI: http://w-shadow.com/
 */
@@ -90,9 +90,9 @@ class ws_wordpress_link_cloaker {
 	}
 	
 	//Get the blog's URL
-	$base = get_option( 'siteurl' );
+	$base = get_option( 'home' );
 	if ( $base == '' ) {
-		$base = get_option( 'home' );
+		$base = get_option( 'siteurl' );
 	}
 	
 	$url = trailingslashit($base).$this->options['prefix'].'/'.$this->wplc_escapize($matches[5]).
@@ -444,7 +444,7 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 
 <script type='text/javascript'>
 	var wplc_ajax_url='<?php
-		echo get_option( "siteurl" ).'/wp-content/plugins/'.$this->myfolder.'/wplc_ajax.php'; 
+		echo trailingslashit(WP_PLUGIN_URL) . $this->myfolder . '/wplc_ajax.php'; 
 		?>';
 
 	function toggleLink(link_id){

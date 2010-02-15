@@ -38,3 +38,17 @@ To upgrade your installation
 1. Get and upload the new files (do steps 1. - 3. from "new installation" instructions)
 1. Reactivate the plugin. Your settings should have been retained from the previous version.
 1. It is recommended to update permalinks again (see Step 6. above).
+
+== Changelog ==
+
+= 1.6 =
+* Fixed a bug where cloaked links wouldn't work when WP was installed in a different directory (as opposed to the blog's root dir.).
+
+= 1.5 =
+* First release on WordPress.org
+* Switched from Prototype to jQuery
+* Added a link to the premium version to the plugin's settings page.
+* Made the .htaccess updates automatic. You no longer need to re-save your permalinks to make the cloaked links work.
+* Minimum compatible version is now 2.6. Tested up to WP 3.0-alpha.
+* Removed some pre-2.6 compatibility code. Everyone should upgrade.
+

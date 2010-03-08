@@ -272,6 +272,7 @@ class ws_wordpress_link_cloaker {
 		<h3>Upgrade To Premium Version</h3>
 	</a>
 	<ul>
+		<li>Cloak links created by other plugins</li>
 		<li>Cloak links in any part of the site</li>
 		<li>Turn keywords into links</li>
 		<li>Multiple cloaking techniques</li>

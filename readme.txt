@@ -2,7 +2,7 @@
 Contributors: whiteshadow
 Tags: posts, formatting, html, css, code, cloaking
 Requires at least: 2.6
-Tested up to: 2.9.1
+Tested up to: 2.9.2
 Stable tag: 1.6
 
 Automatically cloak all (or only selected) links in your posts and pages.

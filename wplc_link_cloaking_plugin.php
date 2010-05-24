@@ -417,8 +417,10 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 			
 			<?php
 			
+			$rowclass = '';
 			foreach ($links as $link) {
-				echo "<tr id='link-$link->id' class='alternate'>
+				$rowclass = ($rowclass == '')?'alternate':'';
+				echo "<tr id='link-$link->id' class='$rowclass'>
 				<td>$link->name</td>
 				<td><a href='$link->url'>".$this->mytruncate($link->url)."</a>
 				<small>
@@ -448,92 +450,91 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 		echo trailingslashit(WP_PLUGIN_URL) . $this->myfolder . '/wplc_ajax.php'; 
 		?>';
 
-	function toggleLink(link_id){
-		jQuery('#clink-'+link_id).toggle();
-		return void(0);
-	}
-	
-	function saveCloakedLink(){
-		var $ = jQuery;
+	jQuery(function($){
 		
-		var clname = $('#wplc_name').val();
-		var clurl = $('#wplc_url').val();
-		
-		if ((clname=='') || (clurl=='')) {
-			alert('You need to fill in both fields!');
-			return false;
+		window.toggleLink = function(link_id){
+			$('#clink-'+link_id).toggle();
+			return void(0);
 		}
 		
-		clname = clname.replace(/\s+/g, '-');
-		$('#wplc_name').val(clname);
-		
-		
-		$('#wplc_status').html('Adding link...');
-		
-		$.get(
-			wplc_ajax_url,
-			{
-				action: 'add_link',
-				name: clname,
-				url: clurl
-			},
-			function(data, textStatus){
-				if ( data.match(/saved/i) ){
-					//Clear the input fields
-					$('#wplc_name').val('');
-					$('#wplc_url').val('');
-					
-					//Get the ID of the newly saved link
-					var results = data.match(/insert_id:(\d+);/);
-					insert_id = results[1];
-					
-					var cloaked_url = '<?php echo get_option('siteurl').'/'.$this->options['prefix'];?>/'+clname+'/';
-					
-					//Add a new table row
-					$('#wplc_links').append(
-						'<tr id="link-' +insert_id + '">' +
-							'<td>' + clname + '</td>' +
-							'<td>'+
-								'<a href="' + clurl + '">'+ clurl +'</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
-								'<small><a href="javascript:toggleLink('+insert_id+');">show cloaked url</a></small>'+
-								'<br><input type="text" id="clink-'+insert_id+'" value="'+cloaked_url+'" style="display:none;width:80%;margin:4px;">' +
-							'</td>' +
-							'<td>0</td>'+
-							'<td><a href="javascript:void(0);" onclick="deleteCloakedLink('+insert_id+'); return false;" title="Delete this cloaked link">Delete</a></td>' +
-						'</tr>'
-					);
-					
-					$('#wplc_status').html('Link added.');
+		window.saveCloakedLink = function(){
+			var clname = $('#wplc_name').val();
+			var clurl = $('#wplc_url').val();
+			
+			if ((clname=='') || (clurl=='')) {
+				alert('You need to fill in both fields!');
+				return false;
+			}
+			
+			clname = clname.replace(/\s+/g, '-');
+			$('#wplc_name').val(clname);
+			
+			
+			$('#wplc_status').html('Adding link...');
+			
+			$.get(
+				wplc_ajax_url,
+				{
+					action: 'add_link',
+					name: clname,
+					url: clurl
+				},
+				function(data, textStatus){
+					if ( data.match(/saved/i) ){
+						//Clear the input fields
+						$('#wplc_name').val('');
+						$('#wplc_url').val('');
+						
+						//Get the ID of the newly saved link
+						var results = data.match(/insert_id:(\d+);/);
+						insert_id = results[1];
+						
+						var cloaked_url = '<?php echo get_option('siteurl').'/'.$this->options['prefix'];?>/'+clname+'/';
+						
+						//Add a new table row
+						$('#wplc_links').append(
+							'<tr id="link-' +insert_id + '">' +
+								'<td>' + clname + '</td>' +
+								'<td>'+
+									'<a href="' + clurl + '">'+ clurl +'</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+									'<small><a href="javascript:toggleLink('+insert_id+');">show cloaked url</a></small>'+
+									'<br><input type="text" id="clink-'+insert_id+'" value="'+cloaked_url+'" style="display:none;width:80%;margin:4px;">' +
+								'</td>' +
+								'<td>0</td>'+
+								'<td><a href="javascript:void(0);" onclick="deleteCloakedLink('+insert_id+'); return false;" title="Delete this cloaked link">Delete</a></td>' +
+							'</tr>'
+						);
+						
+						$('#wplc_status').html('Link added.');
+					}
 				}
-			}
-		);
-	}
-	
-	function deleteCloakedLink(link_id){
-		if (!confirm('Do you really want to delete this link?')) { return false; };
+			);
+		}
 		
-		var $ = jQuery;
-		
-		$('#wplc_status').html('Deleting link...');
-		
-		$.get(
-			wplc_ajax_url,
-			{
-				action: 'delete_link',
-				id: link_id,
-			},
-			function(data, textStatus){
-				if(data.match(/deleted/i)){
-					/* Remove the row */
-					$('#link-'+link_id).remove();
-					$('#wplc_status').html('Link deleted.');
-				} else {
-					alert(data);
-					$('#wplc_status').html('Error deleting the link.');
-				};
-			}
-		);
-	}
+		window.deleteCloakedLink = function(link_id){
+			if (!confirm('Do you really want to delete this link?')) { return false; };
+			
+			$('#wplc_status').html('Deleting link...');
+			
+			$.get(
+				wplc_ajax_url,
+				{
+					action: 'delete_link',
+					id: link_id,
+				},
+				function(data, textStatus){
+					if(data.match(/deleted/i)){
+						/* Remove the row */
+						$('#link-'+link_id).remove();
+						$('#wplc_status').html('Link deleted.');
+					} else {
+						alert(data);
+						$('#wplc_status').html('Error deleting the link.');
+					};
+				}
+			);
+		}
+	});
 </script>
 </div>
 		<?php

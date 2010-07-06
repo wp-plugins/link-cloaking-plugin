@@ -41,6 +41,12 @@ To upgrade your installation
 
 == Changelog ==
 
+= 1.7 =
+* Alternate row colors in the link table.
+* Cleaned up some JavaScript.
+* When an attempt to add a link fails, the plugin should now display an error message instead of just failing silently.
+* WP 3.0 compatibility.
+
 = 1.6 =
 * Fixed a bug where cloaked links wouldn't work when WP was installed in a different directory (as opposed to the blog's root dir.).
 

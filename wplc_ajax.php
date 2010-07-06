@@ -25,11 +25,13 @@
 		if($link_exists){
 			echo "Error : A link with this name already exists!";
 		} else {
-			$wpdb->query(
+			$rez = $wpdb->query(
 	        	"INSERT INTO $ws_link_cloaker->linkstable_name(name, url) 
 	        	 VALUES('".$wpdb->escape($name)."', '".$wpdb->escape($url)."')"
 	        	);
-	        //
+  			if ( $rez === false ){
+  				exit($wpdb->last_error);
+  			}
 	        echo "Saved.<!--insert_id:$wpdb->insert_id;-->";
 		};
 		

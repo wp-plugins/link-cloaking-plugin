@@ -41,6 +41,9 @@ To upgrade your installation
 
 == Changelog ==
 
+= 1.8 =
+* Fixed a mysterious problem that could make it impossible to manually add links that begin with "http://".
+
 = 1.7 =
 * Alternate row colors in the link table.
 * Cleaned up some JavaScript.

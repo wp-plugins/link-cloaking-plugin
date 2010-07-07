@@ -13,12 +13,12 @@
 	
 	$siteurl=get_option('siteurl');
 	
-	$action=isset($_GET['action'])?$_GET['action']:'status';
+	$action=isset($_POST['action'])?$_POST['action']:'status';
 	
 	if($action=='add_link'){
 		/* save a link */
-		$name = $_GET['name'];
-		$url = $_GET['url'];
+		$name = $_POST['name'];
+		$url = $_POST['url'];
 		
 		$sql="SELECT count(*) FROM $ws_link_cloaker->linkstable_name WHERE name LIKE '".$wpdb->escape($name)."'";
 		$link_exists=$wpdb->get_var($sql);
@@ -37,7 +37,7 @@
 		
 	} else if($action=='delete_link'){
 		/* delete a cloaked link */
-		$id=intval($_GET['id']);
+		$id=intval($_POST['id']);
 		$wpdb->query("DELETE FROM $ws_link_cloaker->linkstable_name WHERE id=$id LIMIT 1");
 		if ($wpdb->rows_affected>0){
 			echo "Link deleted."; //probably

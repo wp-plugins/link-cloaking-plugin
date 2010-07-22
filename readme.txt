@@ -1,7 +1,7 @@
 === Link Cloaking Plugin ===
 Contributors: whiteshadow
 Tags: posts, formatting, html, css, code, cloaking
-Requires at least: 2.6
+Requires at least: 2.8
 Tested up to: 3.0
 Stable tag: 1.8
 

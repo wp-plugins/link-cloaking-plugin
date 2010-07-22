@@ -3,7 +3,7 @@
 Plugin Name: Link Cloaking Plugin
 Plugin URI: http://w-shadow.com/blog/2007/07/28/link-cloaking-plugin-for-wordpress/
 Description: Automatically cloaks outgoing links in your posts and pages. You can also add static cloaked links manually.
-Version: 1.8
+Version: 1.8.1
 Author: Janis Elsts
 Author URI: http://w-shadow.com/
 */
@@ -89,14 +89,8 @@ class ws_wordpress_link_cloaker {
 		return $matches[0];
 	}
 	
-	//Get the blog's URL
-	$base = get_option( 'home' );
-	if ( $base == '' ) {
-		$base = get_option( 'siteurl' );
-	}
-	
-	$url = trailingslashit($base).$this->options['prefix'].'/'.$this->wplc_escapize($matches[5]).
-		 '/'.($post->ID)."/".$this->link_number;
+	//Generate the cloaked URL
+	$url = $this->make_cloaked_url($matches[5], $post->ID, $this->link_number);
 	
 	//Build the new link tag
 	$link = $matches[1].$quote.$url.$quote.$matches[4].$matches[5].$matches[6];
@@ -105,6 +99,26 @@ class ws_wordpress_link_cloaker {
 		$link = str_replace('<a ','<a rel="nofollow" ', $link);
 	}
 	return $link;
+ }
+ 
+ function make_cloaked_url($link_name = '', $post_id = null, $link_num = 0){
+	$base = get_option( 'home' );
+	if ( $base == '' ) {
+		$base = get_option( 'siteurl' );
+	}
+	
+	$url = trailingslashit($base) . $this->options['prefix'] . '/'; 
+	if ( !empty($link_name) ){
+		$url .= $this->wplc_escapize($link_name) . '/';
+		if ( !empty($post_id) ){
+			$url .= intval($post_id) . '/';
+			if ( !empty($link_num) ){
+				$url .= intval($link_num);
+			}
+		}
+	}
+	
+	return $url;
  }
 
  function content_filter($content){
@@ -427,7 +441,7 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 				&nbsp;&nbsp;&nbsp;&nbsp; <a href='javascript:toggleLink($link->id);'>show cloaked url</a> 
 				</small><br/>
 				<input type='text' style='display:none; width:80%; margin-top: 4px;' id='clink-$link->id' 
-				value='".get_option('siteurl').'/'.$this->options['prefix']."/".$link->name."/'>
+				value='". esc_attr($this->make_cloaked_url($link->name)) . "'>
 				</td>
 				<td>$link->hits</td>
 				
@@ -489,7 +503,7 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 						var results = data.match(/insert_id:(\d+);/);
 						insert_id = results[1];
 						
-						var cloaked_url = '<?php echo get_option('siteurl').'/'.$this->options['prefix'];?>/'+clname+'/';
+						var cloaked_url = '<?php echo esc_js($this->make_cloaked_url()); ?>'+clname+'/';
 						
 						//Add a new table row
 						$('#wplc_links').append(

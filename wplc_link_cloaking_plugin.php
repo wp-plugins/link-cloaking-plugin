@@ -3,7 +3,7 @@
 Plugin Name: Link Cloaking Plugin
 Plugin URI: http://w-shadow.com/blog/2007/07/28/link-cloaking-plugin-for-wordpress/
 Description: Automatically cloaks outgoing links in your posts and pages. You can also add static cloaked links manually.
-Version: 1.8.1
+Version: 1.8.2
 Author: Janis Elsts
 Author URI: http://w-shadow.com/
 */

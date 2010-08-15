@@ -3,7 +3,7 @@ Contributors: whiteshadow
 Tags: posts, formatting, html, css, code, cloaking
 Requires at least: 2.8
 Tested up to: 3.0.1
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 
 Automatically cloak all (or only selected) links in your posts and pages.
 
@@ -40,6 +40,10 @@ To upgrade your installation
 1. It is recommended to update permalinks again (see Step 6. above).
 
 == Changelog ==
+
+= 1.8.2 =
+* Updated the installation instructions to use the correct menu titles for newer versions of WP.
+* WP 3.0.1 compatibility.
 
 = 1.8.1 =
 * Fixed static links throwing a 404 when WP is installed in a custom directory.

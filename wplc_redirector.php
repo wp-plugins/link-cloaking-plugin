@@ -2,7 +2,7 @@
 /*
 	Cloaked link redirection script.
 */
-	require_once("../../../wp-config.php");
+	require_once '../../../wp-load.php';
 	
 	//Set the default redirect URL to use if nothing found
 	$url = get_option('home');

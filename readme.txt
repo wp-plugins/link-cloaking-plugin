@@ -2,8 +2,8 @@
 Contributors: whiteshadow
 Tags: posts, formatting, html, css, code, cloaking
 Requires at least: 2.8
-Tested up to: 3.1
-Stable tag: 1.8.3
+Tested up to: 3.2
+Stable tag: 1.8.4
 
 Automatically cloak all (or only selected) links in your posts and pages.
 
@@ -40,6 +40,11 @@ To upgrade your installation
 1. It is recommended to update permalinks again (see Step 6. above).
 
 == Changelog ==
+
+= 1.8.4 =
+* Fixed "Add link" not working on hosts access to .php files in /wp-content/ is forbidden.
+* Added a basic "Settings" icon to the Settings -> Link Cloaking page.
+* Minor wording changes on the settings page.
 
 = 1.8.2 =
 * Updated the installation instructions to use the correct menu titles for newer versions of WP.

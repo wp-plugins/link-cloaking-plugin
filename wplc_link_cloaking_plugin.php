@@ -616,4 +616,11 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 
 $ws_link_cloaker = new ws_wordpress_link_cloaker();
 
+require 'plugin-updates/plugin-update-checker.php';
+$ws_lc_update_checker = new PluginUpdateChecker(
+    'http://w-shadow.com/files/link-cloaking-plugin.json',
+    __FILE__,
+    'link-cloaking-plugin'
+);
+
 ?>

@@ -47,6 +47,10 @@ class ws_wordpress_link_cloaker {
 	add_filter('mod_rewrite_rules', array(&$this,'rewrite_rules'));
 	add_action('admin_menu', array(&$this,'options_menu'));
 	add_action('admin_print_scripts', array(&$this,'load_admin_scripts'));
+	
+	//AJAX handlers
+	add_action('wp_ajax_wplc_add_link', array(&$this, 'ajax_add_link'));
+	add_action('wp_ajax_wplc_delete_link', array(&$this, 'ajax_delete_link'));
  }
 
 
@@ -218,6 +222,50 @@ class ws_wordpress_link_cloaker {
 		if(strlen($str)<=$max_length) return $str;
 		return (substr($str, 0, $max_length-3).'...');
  }
+ 
+ function ajax_add_link(){
+ 	global $wpdb;
+ 	
+ 	if (!current_user_can('manage_links')) {
+		die("Error: You can't do that. Access denied.");
+	}
+ 	
+ 	/* save a link */
+	$name = $_POST['name'];
+	$url = $_POST['url'];
+	
+	$sql="SELECT count(*) FROM {$this->linkstable_name} WHERE name LIKE '".$wpdb->escape($name)."'";
+	$link_exists=$wpdb->get_var($sql);
+	if($link_exists){
+		echo "Error : A link with this name already exists!";
+	} else {
+		$rez = $wpdb->query(
+        	"INSERT INTO {$this->linkstable_name}(name, url) 
+        	 VALUES('".$wpdb->escape($name)."', '".$wpdb->escape($url)."')"
+        	);
+		if ( $rez === false ){
+			exit($wpdb->last_error);
+		}
+        echo "Saved.<!--insert_id:$wpdb->insert_id;-->";
+	};
+ }
+ 
+ function ajax_delete_link(){
+ 	global $wpdb;
+ 	
+ 	if (!current_user_can('manage_links')) {
+		die("Error: You can't do that. Access denied.");
+	}
+	
+	/* delete a cloaked link */
+	$id=intval($_POST['id']);
+	$wpdb->query("DELETE FROM {$this->linkstable_name} WHERE id={$id} LIMIT 1");
+	if ($wpdb->rows_affected>0){
+		echo "Link deleted."; //probably
+	} else {
+		echo "Error: Failed to delete the link!";
+	}
+ }
 
  function options_page(){
  	global $wp_rewrite;
@@ -247,7 +295,13 @@ class ws_wordpress_link_cloaker {
 	
 }
 ?>
-<div class="wrap"><h2>Link Cloaking</h2>
+<div class="wrap">
+	<?php 
+	if (function_exists('screen_icon')) {
+		screen_icon();
+	} 
+	?>
+	<h2>Link Cloaking</h2>
 
 <style>
 #eclipse-cloaker-ad {
@@ -282,15 +336,14 @@ class ws_wordpress_link_cloaker {
 </style>
 <div id="eclipse-cloaker-ad">
 <div>
-	<a href="http://eclipsecloaker.com/" target="_blank" title="Get Eclipse Link Cloaker">
+	<a href="http://eclipsecloaker.com/?from=the-free-version" target="_blank" title="Get Eclipse Link Cloaker">
 		<h3>Upgrade To Premium Version</h3>
 	</a>
 	<ul>
-		<li>Cloak links created by other plugins</li>
 		<li>Cloak links in any part of the site</li>
+		<li>Cloak links created with other plugins</li>
 		<li>Turn keywords into links</li>
-		<li>Multiple cloaking techniques</li>
-		<li>Improved click statistics</li>
+		<li>Use advanced cloaking techniques</li>
 	</ul>
 </div>
  
@@ -298,7 +351,7 @@ class ws_wordpress_link_cloaker {
 
 <form name="cloaking_options" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=link-cloaking-plugin-options&amp;updated=true"> 
 
-<table class="optiontable"> 
+<table class="form-table"> 
 
 <tr valign="top"> 
 <th scope="row">General:</th> 
@@ -326,7 +379,7 @@ class ws_wordpress_link_cloaker {
 <p>
 <label><input type="radio" name="mode" id="mode" value="everything"
 <?php if($this->options['mode']=='everything') echo ' checked' ?>/> Cloak All Links</label><br/>
-All links will be cloaked except those with relative or ambiguous URLs.
+All external links will be cloaked.
 </p>
 
 <p>
@@ -461,7 +514,7 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 
 <script type='text/javascript'>
 	var wplc_ajax_url='<?php
-		echo esc_js(plugins_url('/wplc_ajax.php', __FILE__)); 
+		echo esc_js(admin_url('admin-ajax.php')); 
 		?>';
 
 	jQuery(function($){
@@ -489,7 +542,7 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 			$.post(
 				wplc_ajax_url,
 				{
-					action: 'add_link',
+					action: 'wplc_add_link',
 					name: clname,
 					url: clurl
 				},
@@ -536,7 +589,7 @@ Note that <code>www.domain.com</code> and <code>domain.com</code> are treated as
 			$.post(
 				wplc_ajax_url,
 				{
-					action: 'delete_link',
+					action: 'wplc_delete_link',
 					id: link_id,
 				},
 				function(data, textStatus){

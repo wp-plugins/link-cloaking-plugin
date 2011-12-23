@@ -172,7 +172,7 @@ class ws_wordpress_link_cloaker {
 			PRIMARY KEY id (id)
 		);";
 	
-	require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($sql);
 	
 	//Force WP to regenerate the .htaccess file and insert the plugin's rules into it.  
